@@ -1,3 +1,3 @@
 ## High level overview
 
-<img src="./assets/imgs/stack-overview.png">
+<img src="./assets/imgs/stack-overview.emf">
