@@ -1,3 +1,3 @@
 ## High level overview
 
-<a src="./assets/imgs/stack-overview.svg">
+<a src="./assets/imgs/stack-overview.svg">Hyperlinked version</a>
