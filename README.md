@@ -14,7 +14,7 @@ https://github.com/ixmaps/website2017
 https://github.com/ixmaps/IXmapsClient
 
 ### Server setup
-Website setup
+#### Website setup
 ```
 git clone git@github.com:ixmaps/website2017.git /var/www/ixmaps/
 cd ixmaps
@@ -31,7 +31,7 @@ bower install
 grunt
 ```
 
-PHP setup
+#### PHP setup
 ```
 git clone git@github.com:ixmaps/website2017.git /var/www/php-backend/
 cd php-backend/application
@@ -41,19 +41,19 @@ ln -s /var/www/php-backend/application/ application/ ??
 php-util ??
 ```
 
-Script setup
+#### Script setup
 ```
 git clone git@github.com:ixmaps/cgi-bin.git /var/www/cgi-bin/
 git clone git@github.com:ixmaps/ixmaps-bin.git /home/ixmaps/bin/
 ```
 
-Maxmind data setup?
+#### Maxmind data setup?
 ```
 mkdir /home/ixmaps/ix-data/mm-data
 python /home/ixmaps/bin/download_maxmind.py ??
 ```
 
-Crontab setup
+#### Crontab setup  
 User ixmaps
 ```
 # download new Maxmind data file
@@ -79,7 +79,8 @@ User ixmaps
 # collect last hop in tr_last_hops table
 # 100 TR every 20 mins
 5,25,40 * * * * php /var/www/php-backend/application/controller/collectLastHop.php > /home/ixmaps/tmp/collectLastHop_log
-
+```
+```
 User root
 # autorenewl of SSL certs
 0 1 * * 1 /opt/letsencrypt/certbot-auto renew >> /var/log/le-renew.log
