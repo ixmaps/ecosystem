@@ -1,7 +1,7 @@
 ## High level overview
 
 ![IXmaps stack overview](./assets/imgs/stack-overview.png)
-Interactive version at https://www.ixmaps.ca/ecosystem.php
+Interactive version available at https://www.ixmaps.ca/ecosystem.php
 
 ### Server setup
 Website setup
