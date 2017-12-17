@@ -80,8 +80,8 @@ User ixmaps
 # 100 TR every 20 mins
 5,25,40 * * * * php /var/www/php-backend/application/controller/collectLastHop.php > /home/ixmaps/tmp/collectLastHop_log
 ```
-```
 User root
+```
 # autorenewl of SSL certs
 0 1 * * 1 /opt/letsencrypt/certbot-auto renew >> /var/log/le-renew.log
 5 1 * * 1 service apache2 reload
