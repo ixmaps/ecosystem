@@ -4,7 +4,7 @@
 Interactive version available at https://www.ixmaps.ca/documentation.php
 
 ### IXmaps backend
-https://github.com/ixmaps/php-backend  
+https://github.com/ixmaps/php-backend
 https://github.com/ixmaps/ixmaps-bin
 
 ### IXmaps frontend
@@ -53,13 +53,13 @@ mkdir /home/ixmaps/ix-data/mm-data
 python /home/ixmaps/bin/download_maxmind.py ??
 ```
 
-#### Crontab setup  
+#### Crontab setup
 User ixmaps
 ```
 # download new Maxmind data file
 0 2 15 * * /home/ixmaps/bin/download_maxmind.py
 
-# geo correction 
+# geo correction
 */10 * * * * /home/ixmaps/bin/corr-latlong.sh -n
 */20 * * * * php /var/www/php-backend/application/controller/geo_update_cities.php > /home/ixmaps/tmp/geo_update_cities.log
 0 5 * * * /home/ixmaps/bin/corr-latlong.sh -u
