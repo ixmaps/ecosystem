@@ -1,7 +1,7 @@
 ## High level overview
 
-![IXmaps stack overview](./assets/imgs/stack-overview.png)
 Interactive version available at https://www.ixmaps.ca/documentation.php
+![IXmaps stack overview](./assets/imgs/stack-overview.png)
 
 ### IXmaps backend
 https://github.com/ixmaps/php-backend
