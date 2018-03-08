@@ -84,6 +84,9 @@ User ixmaps
 # collect last hop in tr_last_hops table (100 TR every 20 mins)
 # I think this is outdated, waiting for Anto to comment
 5,25,40 * * * * php /var/www/php-backend/application/controller/collectLastHop.php > /home/ixmaps/tmp/collectLastHop_log
+
+# update database stats for website
+*/5 * * * * /home/ixmaps/bin/db-stats.sh
 ```
 User root
 ```
