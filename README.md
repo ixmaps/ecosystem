@@ -1,10 +1,11 @@
 ## High level overview
 
-![IXmaps stack overview](./assets/imgs/stack-overview.png)
 Interactive version available at https://www.ixmaps.ca/documentation.php
+![IXmaps stack overview](./assets/imgs/stack-overview.png)
 
 ### IXmaps backend
 https://github.com/ixmaps/php-backend
+
 https://github.com/ixmaps/ixmaps-bin
 
 ### IXmaps frontend
@@ -56,33 +57,41 @@ python /home/ixmaps/bin/download_maxmind.py ??
 #### Crontab setup
 User ixmaps
 ```
-# download new Maxmind data file
+# download new Maxmind data file (at 2:00 on the 15th of each month)
 0 2 15 * * /home/ixmaps/bin/download_maxmind.py
 
-# geo correction
+# geocorrection of any new IPs (every 10 minutes)
 */10 * * * * /home/ixmaps/bin/corr-latlong.sh -n
+# update cities to match lat and long (every 20 minutes)
 */20 * * * * php /var/www/php-backend/application/controller/geo_update_cities.php > /home/ixmaps/tmp/geo_update_cities.log
+# recheck all geocorrection of IPs (every day at 5:00)
 0 5 * * * /home/ixmaps/bin/corr-latlong.sh -u
 
-# backups
+# sql dump to backup ixmaps database (every day at 4:35)
 35 4 * * * pg_dump ixmaps | gzip > /home/ixmaps/backup_daily/`date +\%Y\%m\%d`.sql.gz
+# long term backup of one sql dump (every Thursday at 4:21)
 21 4 * * 4 /bin/cp /home/ixmaps/backup_daily/*01.sql.gz /home/ixmaps/backup
+# long term backup of another sql dump (every Thursday at 4:21)
 21 4 * * 4 /bin/cp /home/ixmaps/backup_daily/*15.sql.gz /home/ixmaps/backup
+# cleanup of daily backups (every Thursday at 4:22)
 22 4 * * 4 /usr/bin/find /home/ixmaps/backup_daily -type f -mtime +30 -delete
 
-# concat all of the trsets into 00:_all_trsets.trset
+# concat all of the trsets into 00:_all_trsets.trset (every day at 5:30)
 30 5 * * * /home/ixmaps/bin/concat-trsets.sh
 
-# create the helper tables for the DB
+# create the helper tables for the DB (every day at 6:00)
 0 6 * * * /home/ixmaps/bin/create-extra-db-tables.sh
 
-# collect last hop in tr_last_hops table
-# 100 TR every 20 mins
+# collect last hop in tr_last_hops table (100 TR every 20 mins)
+# I think this is outdated, waiting for Anto to comment
 5,25,40 * * * * php /var/www/php-backend/application/controller/collectLastHop.php > /home/ixmaps/tmp/collectLastHop_log
+
+# update database stats for website
+*/5 * * * * /home/ixmaps/bin/db-stats.sh
 ```
 User root
 ```
-# autorenewl of SSL certs
+# autorenewl of SSL certs (every Monday at 1:00 and 1:05)
 0 1 * * 1 /opt/letsencrypt/certbot-auto renew >> /var/log/le-renew.log
 5 1 * * 1 service apache2 reload
 ```
