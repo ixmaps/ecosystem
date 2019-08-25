@@ -17,24 +17,35 @@ https://github.com/ixmaps/IXmapsClient
 ### Server setup
 #### Website setup
 ```
-git clone git@github.com:ixmaps/website2017.git /var/www/ixmaps/
-cd ixmaps
+git clone https://github.com/ixmaps/website2017.git
+cd /var/www/ixmaps
 cp config.example.json config.json
-nano config.json (add key, modify php-backend)
+less config.json (add gmaps key, modify php-backend as required)
+
 ln -s /var/www/php-backend/application/ application/
-cp -R /var/www/ixmaps-old/IXmapsClient /var/www/ixmaps/
-cp -R /var/www/ixmaps-old/trsets /var/www/ixmaps/
-cp -R /var/www/ixmaps-old/piwik/ /var/www/ixmaps/ (permissions issues)
-chmod -R www-data piwik
-chgrp -R www-data piwki
+
+
+git clone https://github.com/ixmaps/trsets.git
+# cp -R /var/www/ixmaps-old/IXmapsClient - remove?
+# but check git/config for [submodule "trsets"]
+#        url = https://github.com/ixmaps/trsets
+
 npm install
 bower install
 grunt
 ```
 
+#### Future site of piwik setup
+```
+--- PIWIK STUFF ---
+# cp -R /var/www/ixmaps-old/piwik/ (where does this come from, permissions issues, how can we pull this out so that is not required locally?)
+chmod -R www-data piwik
+chgrp -R www-data piwik
+```
+
 #### PHP setup
 ```
-git clone git@github.com:ixmaps/website2017.git /var/www/php-backend/
+git clone git@github.com:ixmaps/php-backend.git
 cd php-backend/application
 cp config.sample.php config.php
 nano config.json (add dppassword, modify webUrl if necessary)
