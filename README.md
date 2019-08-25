@@ -17,10 +17,22 @@ https://github.com/ixmaps/IXmapsClient
 ### Server setup
 #### Website setup
 ```
-git clone https://github.com/ixmaps/website2017.git
-cd /var/www/ixmaps
+git clone https://github.com/ixmaps/website2017.git /var/www/website
+cd /var/www/website
 cp config.example.json config.json
-less config.json (add gmaps key, modify php-backend as required)
+nano config.json (add gmaps key, modify php-backend as required)
+
+Two paths:
+
+1. point at our backend
+Follow the 
+
+
+2. set up the backend on your own machine
+git clone git@github.com:ixmaps/php-backend.git /var/www/php-backend
+cd /var/www/php-backend/application
+cp config.sample.php config.php
+nano config.json (add dppassword, modify webUrl if necessary)
 
 ln -s /var/www/php-backend/application/ application/
 
