@@ -3,85 +3,55 @@
 Interactive version available at https://www.ixmaps.ca/documentation.php
 ![IXmaps stack overview](./assets/imgs/stack-overview.png)
 
-### IXmaps backend
-https://github.com/ixmaps/php-backend
-
-https://github.com/ixmaps/ixmaps-bin
-
 ### IXmaps frontend
 https://github.com/ixmaps/website2017
-
-### IXmapsClient
-https://github.com/ixmaps/IXmapsClient
-
-### Server setup
-#### Website setup
+TODO: think about how we set up all of the dir structures - we should leave this up to the user? Paramaterize it?
 ```
 git clone https://github.com/ixmaps/website2017.git /var/www/website
 cd /var/www/website
 cp config.example.json config.json
-nano config.json (add gmaps key, modify php-backend as required)
+nano config.json (to add gmaps key, modify php-backend as required (see below))
+```
 
-Two paths:
+Follow the setup instructions in the README listed at https://github.com/ixmaps/website2017.git
+(todo: think about moving those instructions here? Or there instructions there?)
 
-1. point at our backend
-Follow the 
+### IXmaps backend
+https://github.com/ixmaps/php-backend
+https://github.com/ixmaps/ixmaps-bin
 
+#### PHP backend setup
+Two paths forward:
+1. point at our server's backend
+...
 
 2. set up the backend on your own machine
+```
 git clone git@github.com:ixmaps/php-backend.git /var/www/php-backend
 cd /var/www/php-backend/application
 cp config.sample.php config.php
-nano config.json (add dppassword, modify webUrl if necessary)
+nano config.json (to add dbpassword, modify webUrl if necessary)
 
-ln -s /var/www/php-backend/application/ application/
-
-
-git clone https://github.com/ixmaps/trsets.git
-# cp -R /var/www/ixmaps-old/IXmapsClient - remove?
-# but check git/config for [submodule "trsets"]
-#        url = https://github.com/ixmaps/trsets
-
-npm install
-bower install
-grunt
-```
-
-#### Future site of piwik setup
-```
---- PIWIK STUFF ---
-# cp -R /var/www/ixmaps-old/piwik/ (where does this come from, permissions issues, how can we pull this out so that is not required locally?)
-chmod -R www-data piwik
-chgrp -R www-data piwik
-```
-
-#### PHP setup
-```
-git clone git@github.com:ixmaps/php-backend.git
-cd php-backend/application
-cp config.sample.php config.php
-nano config.json (add dppassword, modify webUrl if necessary)
-ln -s /var/www/php-backend/application/ application/ ??
-php-util ??
+ln -s /var/www/website/application/ .
 ```
 
 #### Script setup
 ```
-git clone git@github.com:ixmaps/cgi-bin.git /var/www/cgi-bin/
+git clone git@github.com:ixmaps/cgi-bin.git /var/www/cgi-bin/ (note that this will be removed entirely in the coming weeks)
 git clone git@github.com:ixmaps/ixmaps-bin.git /home/ixmaps/bin/
 ```
 
-#### Maxmind data setup?
+#### Maxmind data setup
 ```
 mkdir /home/ixmaps/ix-data/mm-data
-python /home/ixmaps/bin/download_maxmind.py ??
+/home/ixmaps/bin/download_maxmind.sh
 ```
 
 #### Crontab setup
 User ixmaps
 ```
 # download new Maxmind data file (at 2:00 on the 15th of each month)
-0 2 15 * * /home/ixmaps/bin/download_maxmind.py
+0 2 15 * * /home/ixmaps/bin/download_maxmind.sh
 
 # geocorrection of any new IPs (every 10 minutes)
 */10 * * * * /home/ixmaps/bin/corr-latlong.sh -n
@@ -118,3 +88,20 @@ User root
 0 1 * * 1 /opt/letsencrypt/certbot-auto renew >> /var/log/le-renew.log
 5 1 * * 1 service apache2 reload
 ```
+#### Piwik setup
+(Under construction. Piwik's name has also changed. Not necessary for most users.)
+```
+--- PIWIK STUFF ---
+# cp -R /var/www/ixmaps-old/piwik/ (where does this come from, permissions issues, how can we pull this out so that is not required locally?)
+chmod -R www-data piwik
+chgrp -R www-data piwik
+```
+
+### IXmapsClient
+(Under construction)
+https://github.com/ixmaps/IXmapsClient
+
+#### TRsets setup
+git clone https://github.com/ixmaps/trsets.git
+# but check git/config for [submodule "trsets"]
+#        url = https://github.com/ixmaps/trsets
