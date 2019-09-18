@@ -32,7 +32,7 @@ cd /var/www/php-backend/application
 cp config.sample.php config.php
 nano config.json (to add dbpassword, modify webUrl if necessary)
 
-ln -s /var/www/website/application/ .
+ln -s /var/www/website/application/ .   (this should be cut, no?)
 ```
 
 #### Script setup
@@ -103,5 +103,12 @@ https://github.com/ixmaps/IXmapsClient
 
 #### TRsets setup
 git clone https://github.com/ixmaps/trsets.git
-# but check git/config for [submodule "trsets"]
-#        url = https://github.com/ixmaps/trsets
+but check git/config for [submodule "trsets"]
+url = https://github.com/ixmaps/trsets
+
+#### ip_addr p_status lifecycle
+General pattern: N -> G -> F
+
+1. GatherTr::insertNewIp sets it to 'N'
+2. The cronjob corr-latlong script looks at 'N' (needs geolocation) and 'U' (unknown location). It then sets to 'G'
+3. The cronjob geo_update_cities.php calls IXmapsGeoCorrection::updateGeoData which updates the city/country based on new lats and then sets the p_status to 'F'. So 'N' and G' only exists for a very short time.
