@@ -28,13 +28,12 @@ Two paths forward:
 2. set up the backend on your own machine
 ```
 git clone git@github.com:ixmaps/php-backend.git /var/www/php-backend
-cd /var/www/php-backend/application
-cp config.sample.php config.php
-nano config.php (to add dbpassword, modify webUrl if necessary)
-cp config.example.js config.js
-nano config.json (add gmaps key. Only required for ptrs)
-
-ln -s /var/www/website/application/ .   (this should be cut, no?)
+cd /srv/www/php-backend/application
+cp /srv/www/php-backend/application/config.sample.php /srv/www/php-backend/application/config.php
+nano /srv/www/php-backend/application/config.php (to add dbpassword, modify webUrl if necessary)
+cp /srv/www/php-backend/application/config.example.json /srv/www/php-backend/application/config.json
+nano /srv/www/php-backend/application/config.js (add gmaps key)
+ln -s /srv/www/php-backend/application/ /srv/www/website/
 ```
 
 #### Script setup
