@@ -31,7 +31,7 @@ git clone git@github.com:ixmaps/php-backend.git /var/www/php-backend
 cd /var/www/php-backend/application
 cp config.sample.php config.php
 nano config.php (to add dbpassword, modify webUrl if necessary)
-cp config.example.json config.json
+cp config.example.js config.js
 nano config.json (add gmaps key. Only required for ptrs)
 
 ln -s /var/www/website/application/ .   (this should be cut, no?)
