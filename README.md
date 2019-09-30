@@ -56,7 +56,7 @@ User ixmaps
 # geocorrection of any new IPs (every 10 minutes)
 */10 * * * * /home/ixmaps/bin/corr-latlong.sh -n
 # update cities to match lat and long (every 20 minutes)
-*/20 * * * * php /var/www/php-backend/application/controller/geo_update_cities.php > /home/ixmaps/tmp/geo_update_cities.log
+*/20 * * * * php /srv/www/php-backend/application/controller/geo_update_cities.php > /home/ixmaps/tmp/geo_update_cities.log
 # recheck all geocorrection of IPs (every day at 5:00)
 0 5 * * * /home/ixmaps/bin/corr-latlong.sh -u
 
@@ -77,7 +77,7 @@ User ixmaps
 
 # collect last hop in tr_last_hops table (100 TR every 20 mins)
 # I think this is outdated, waiting for Anto to comment
-5,25,40 * * * * php /var/www/php-backend/application/controller/collectLastHop.php > /home/ixmaps/tmp/collectLastHop_log
+# 5,25,40 * * * * php /srv/www/php-backend/application/controller/collectLastHop.php > /home/ixmaps/tmp/collectLastHop_log
 
 # update database stats for website
 */5 * * * * /home/ixmaps/bin/db-stats.sh
