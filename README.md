@@ -28,10 +28,15 @@ sudo chown ixmaps:ixmaps /srv/www/php-backend
 git clone https://github.com/ixmaps/php-backend.git /srv/www/php-backend
 cd /srv/www/php-backend/application
 cp /srv/www/php-backend/application/config.sample.php /srv/www/php-backend/application/config.php
-nano /srv/www/php-backend/application/config.php (add dbpassword, modify webUrl if necessary)
+nano /srv/www/php-backend/application/config.php to add dbpassword (create in db if necessary), modify webUrl if necessary
 cp /srv/www/php-backend/application/config.example.json /srv/www/php-backend/application/config.json
 nano /srv/www/php-backend/application/config.js (add gmaps key)
 ln -s /srv/www/php-backend/application/ /srv/www/website/
+```
+
+#### Utility scripts
+```
+git clone https://github.com/ixmaps/ixmaps-bin.git /home/ixmaps/bin
 ```
 
 #### Maxmind data setup
@@ -85,7 +90,11 @@ User ixmaps
 
 # collect last hop in tr_last_hops table (100 TR every 20 mins)
 # I think this is outdated, waiting for Anto to comment
+<<<<<<< HEAD
 5,25,40 * * * * php /srv/www/php-backend/application/controller/collectLastHop.php > /home/ixmaps/tmp/collectLastHop_log
+=======
+# 5,25,40 * * * * php /srv/www/php-backend/application/controller/collectLastHop.php > /home/ixmaps/tmp/collectLastHop_log
+>>>>>>> 89e7803a830be7b62d9ab4d099fe9fc55c3c06e7
 
 # update database stats for website
 */5 * * * * /home/ixmaps/bin/db-stats.sh
@@ -127,4 +136,7 @@ General pattern: N -> G -> F
 1. GatherTr::insertNewIp sets it to 'N'
 2. The cronjob corr-latlong script looks at 'N' (needs geolocation) and 'U' (unknown location). It then sets to 'G'
 3. The cronjob geo_update_cities.php calls IXmapsGeoCorrection::updateGeoData which updates the city/country based on new lats and then sets the p_status to 'F'. So 'N' and G' only exists for a very short time.
+<<<<<<< HEAD
 ```
+=======
+>>>>>>> 89e7803a830be7b62d9ab4d099fe9fc55c3c06e7
