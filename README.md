@@ -5,12 +5,13 @@ Interactive version available at https://www.ixmaps.ca/documentation.php
 
 ### IXmaps frontend
 https://github.com/ixmaps/website2017
-TODO: think about how we set up all of the dir structures - we should leave this up to the user? Paramaterize it?
 ```
-git clone https://github.com/ixmaps/website2017.git /var/www/website
-cd /var/www/website
-cp config.example.json config.json
-nano config.json (to add gmaps key, modify php-backend as required (see below))
+git clone https://github.com/ixmaps/website2017.git /srv/www/website
+cp /srv/www/website/config.example.json /srv/www/website/config.json
+nano config.json (add Google Maps key, possibly update 'php_backend' value)
+cd /srv/www/website/_assets/__build
+npm install
+bower install
 ```
 
 Follow the setup instructions in the README listed at https://github.com/ixmaps/website2017.git
@@ -21,30 +22,37 @@ https://github.com/ixmaps/php-backend
 https://github.com/ixmaps/ixmaps-bin
 
 #### PHP backend setup
-Two paths forward:
-1. point at our server's backend
-...
-
-2. set up the backend on your own machine
 ```
-git clone git@github.com:ixmaps/php-backend.git /var/www/php-backend
-cd /var/www/php-backend/application
-cp config.sample.php config.php
-nano config.json (to add dbpassword, modify webUrl if necessary)
-
-ln -s /var/www/website/application/ .   (this should be cut, no?)
-```
-
-#### Script setup
-```
-git clone git@github.com:ixmaps/cgi-bin.git /var/www/cgi-bin/ (note that this will be removed entirely in the coming weeks)
-git clone git@github.com:ixmaps/ixmaps-bin.git /home/ixmaps/bin/
+sudo mkdir /srv/www/php-backend
+sudo chown ixmaps:ixmaps /srv/www/php-backend
+git clone https://github.com/ixmaps/php-backend.git /srv/www/php-backend
+cd /srv/www/php-backend/application
+cp /srv/www/php-backend/application/config.sample.php /srv/www/php-backend/application/config.php
+nano /srv/www/php-backend/application/config.php (add dbpassword, modify webUrl if necessary)
+cp /srv/www/php-backend/application/config.example.json /srv/www/php-backend/application/config.json
+nano /srv/www/php-backend/application/config.js (add gmaps key)
+ln -s /srv/www/php-backend/application/ /srv/www/website/
 ```
 
 #### Maxmind data setup
 ```
+mkdir /home/ixmaps/ix-data
 mkdir /home/ixmaps/ix-data/mm-data
 /home/ixmaps/bin/download_maxmind.sh
+```
+
+#### Seeding
+```
+scp ixmaps_seed.sql.gz ixmaps@ixmaps.ca:/home/ixmaps/backup (what is best practice for including a seeding sql file with repo?)
+cd /home/ixmaps/backup
+gunzip ixmaps_seed.sql.gz
+psql ixmaps < ixmaps_seed.sql 
+```
+
+#### Backups
+```
+mkdir /home/ixmaps/backup
+mkdir /home/ixmaps/backup_daily
 ```
 
 #### Crontab setup
@@ -56,7 +64,7 @@ User ixmaps
 # geocorrection of any new IPs (every 10 minutes)
 */10 * * * * /home/ixmaps/bin/corr-latlong.sh -n
 # update cities to match lat and long (every 20 minutes)
-*/20 * * * * php /var/www/php-backend/application/controller/geo_update_cities.php > /home/ixmaps/tmp/geo_update_cities.log
+*/20 * * * * php /srv/www/php-backend/application/controller/geo_update_cities.php > /home/ixmaps/tmp/geo_update_cities.log
 # recheck all geocorrection of IPs (every day at 5:00)
 0 5 * * * /home/ixmaps/bin/corr-latlong.sh -u
 
@@ -77,7 +85,7 @@ User ixmaps
 
 # collect last hop in tr_last_hops table (100 TR every 20 mins)
 # I think this is outdated, waiting for Anto to comment
-5,25,40 * * * * php /var/www/php-backend/application/controller/collectLastHop.php > /home/ixmaps/tmp/collectLastHop_log
+5,25,40 * * * * php /srv/www/php-backend/application/controller/collectLastHop.php > /home/ixmaps/tmp/collectLastHop_log
 
 # update database stats for website
 */5 * * * * /home/ixmaps/bin/db-stats.sh
@@ -88,27 +96,35 @@ User root
 0 1 * * 1 /opt/letsencrypt/certbot-auto renew >> /var/log/le-renew.log
 5 1 * * 1 service apache2 reload
 ```
-#### Piwik setup
-(Under construction. Piwik's name has also changed. Not necessary for most users.)
-```
---- PIWIK STUFF ---
-# cp -R /var/www/ixmaps-old/piwik/ (where does this come from, permissions issues, how can we pull this out so that is not required locally?)
-chmod -R www-data piwik
-chgrp -R www-data piwik
-```
+
+#### Matomo/Piwik setup
+We're running piwik on our dev server (dev.ixmaps.ca).
+To creating a new site instance through at https://dev.ixmaps.ca/piwik/index.php, then add the relevant siteId variables are in /srv/www/website/\_includes/global-head.php
 
 ### IXmapsClient
-(Under construction)
 https://github.com/ixmaps/IXmapsClient
+```
+sudo mkdir /srv/www/IXmapsClient
+sudo chown ixmaps:ixmaps /srv/www/IXmapsClient
+ln -s /srv/www/IXmapsClient /srv/www/website/
+wget https://www.ixmaps.ca/IXmapsClient/IXmapsClient_v.1.0.6.macos.dmg
+wget https://www.ixmaps.ca/IXmapsClient/IXmapsClient.1.0.6.win64.exe
+wget https://www.ixmaps.ca/IXmapsClient/IXmapsClient.1.0.6.linux.tar.gz
+```
 
 #### TRsets setup
-git clone https://github.com/ixmaps/trsets.git
-but check git/config for [submodule "trsets"]
-url = https://github.com/ixmaps/trsets
+```
+sudo mkdir /srv/www/trsets
+sudo chown ixmaps:ixmaps /srv/www/trsets
+ln -s /srv/www/trsets /srv/www/website/
+git clone https://github.com/ixmaps/trsets.git /srv/www/trsets
+```
 
+### Misc
 #### ip_addr p_status lifecycle
 General pattern: N -> G -> F
-
+```
 1. GatherTr::insertNewIp sets it to 'N'
 2. The cronjob corr-latlong script looks at 'N' (needs geolocation) and 'U' (unknown location). It then sets to 'G'
 3. The cronjob geo_update_cities.php calls IXmapsGeoCorrection::updateGeoData which updates the city/country based on new lats and then sets the p_status to 'F'. So 'N' and G' only exists for a very short time.
+```
