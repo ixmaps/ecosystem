@@ -51,7 +51,7 @@ mkdir /home/ixmaps/ix-data/mm-data
 scp ixmaps_seed.sql.gz ixmaps@ixmaps.ca:/home/ixmaps/backup (what is best practice for including a seeding sql file with repo?)
 cd /home/ixmaps/backup
 gunzip ixmaps_seed.sql.gz
-psql ixmaps < ixmaps_seed.sql 
+psql ixmaps < ixmaps_seed.sql
 ```
 
 #### Backups
@@ -69,9 +69,11 @@ User ixmaps
 # geocorrection of any new IPs (every 10 minutes)
 */10 * * * * /home/ixmaps/bin/corr-latlong.sh -n
 # update cities to match lat and long (every 20 minutes)
-*/20 * * * * php /srv/www/php-backend/application/controller/geo_update_cities.php > /home/ixmaps/tmp/geo_update_cities.log
-# recheck all geocorrection of IPs (every day at 5:00)
-0 5 * * * /home/ixmaps/bin/corr-latlong.sh -u
+*/20 * * * * php /srv/www/php-backend/application/controller/geo_update_cities.php > /home/ixmaps/log/geo_update_cities.log
+# recheck all geocorrection of IPs (every day at 1:00)
+0 1 * * * /home/ixmaps/bin/corr-latlong.sh -u
+# update the traceroute_traits and annotated_traceroutes tables (every day at 3:00)
+0 3 * * * /srv/www/php-backend/application/controller/derived_tables.php >> /home/ixmaps/log/derived_tables.log
 
 # sql dump to backup ixmaps database (every day at 4:35)
 35 4 * * * pg_dump ixmaps | gzip > /home/ixmaps/backup_daily/`date +\%Y\%m\%d`.sql.gz
@@ -87,14 +89,6 @@ User ixmaps
 
 # create the helper tables for the DB (every day at 6:00)
 0 6 * * * /home/ixmaps/bin/create-extra-db-tables.sh
-
-# collect last hop in tr_last_hops table (100 TR every 20 mins)
-# I think this is outdated, waiting for Anto to comment
-<<<<<<< HEAD
-5,25,40 * * * * php /srv/www/php-backend/application/controller/collectLastHop.php > /home/ixmaps/tmp/collectLastHop_log
-=======
-# 5,25,40 * * * * php /srv/www/php-backend/application/controller/collectLastHop.php > /home/ixmaps/tmp/collectLastHop_log
->>>>>>> 89e7803a830be7b62d9ab4d099fe9fc55c3c06e7
 
 # update database stats for website
 */5 * * * * /home/ixmaps/bin/db-stats.sh
@@ -134,9 +128,12 @@ git clone https://github.com/ixmaps/trsets.git /srv/www/trsets
 General pattern: N -> G -> F
 ```
 1. GatherTr::insertNewIp sets it to 'N'
-2. The cronjob corr-latlong script looks at 'N' (needs geolocation) and 'U' (unknown location). It then sets to 'G'
-3. The cronjob geo_update_cities.php calls IXmapsGeoCorrection::updateGeoData which updates the city/country based on new lats and then sets the p_status to 'F'. So 'N' and G' only exists for a very short time.
-<<<<<<< HEAD
+2. The cronjob corr-latlong script looks at 'N' (needs geolocation) and 'U' (unknown location). It then sets p_status to 'G'
+3. The cronjob geo_update_cities.php calls IXmapsGeoCorrection::getIpAddrInfo to determine which IPs to update (those with p_status of 'G'). IXmapsGeoCorrection::updateGeoData then updates the city/country based on new lats and then sets the p_status to 'F'. So 'N' and G' only exist for a very short time.
 ```
-=======
->>>>>>> 89e7803a830be7b62d9ab4d099fe9fc55c3c06e7
+
+## License
+Copyright (C) 2020 IXmaps.
+These scripts [github.com/ixmaps/ixmaps-bin](https://github.com/ixmaps/ecosystem) are licensed under a GNU AGPL v3.0 license. All files are free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, version 3 of the License.
+
+These scripts are distributed in the hope that they will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details [gnu.org/licenses](https://gnu.org/licenses/agpl.html).
