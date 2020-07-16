@@ -128,7 +128,7 @@ git clone https://github.com/ixmaps/trsets.git /srv/www/trsets
 General pattern: N -> G -> F
 ```
 1. GatherTr::insertNewIp sets it to 'N'
-2. The cronjob corr-latlong script looks at 'N' (needs geolocation) and 'U' (unknown location). It then sets p_status to 'G' if corrected or 'U' ifnot corrected
+2. The cronjob corr-latlong script looks at 'N' (needs geolocation) and 'U' (unknown location). It then sets p_status to 'G' if corrected or 'U' if not corrected
 3. The cronjob geo_update_cities.php calls IXmapsGeoCorrection::getIpAddrInfo to determine which IPs to update (those with p_status of 'G'). IXmapsGeoCorrection::updateGeoData then updates the city/country based on new lats and then sets the p_status to 'F'. So 'N' and G' only exist for a very short time.
 ```
 
